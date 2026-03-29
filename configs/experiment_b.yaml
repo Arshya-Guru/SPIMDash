@@ -1,0 +1,51 @@
+# =============================================================================
+# SynthSegSPIM - Experiment B: SPIM-aware probabilistic augmentation
+# =============================================================================
+
+# -- Paths --
+data:
+  label_dir: "/nfs/khan/trainees/apooladi/brainhack/labels"
+  image_dir: "/nfs/khan/trainees/apooladi/brainhack/downsampled_lighsheet5"
+  output_dir: "./outputs_experiment_b"
+
+  # train/val split
+  val_subjects: 10
+  random_seed: 42
+
+# -- Volume geometry (from data inspection) --
+volume:
+  target_shape: [224, 320, 192]
+  n_labels: 23
+
+# -- Synthetic generation --
+synth:
+  intensity_mu_range: [0, 300]
+  intensity_sigma_range: [5, 30]
+  bias_field_coeffs: 4
+  bias_field_strength: 0.4
+  noise_std_range: [0, 25]
+  blur_sigma_range: [0, 1.5]
+  deform_scale: 3.0
+  deform_grid_spacing: 32
+  gamma_range: [0.7, 1.5]
+
+# -- Model (SynthSeg architecture) --
+model:
+  architecture: "synthseg_unet"
+  in_channels: 1
+  base_features: 24
+
+# -- Training --
+training:
+  epochs: 60
+  steps_per_epoch: 500
+  batch_size: 2
+  lr: 1.0e-4
+  optimizer: "adam"
+  scheduler: "none"
+  warmup_steps: 0
+  loss: "dice_ce"
+  save_every: 25
+  val_every: 3
+  amp: true
+  gpu: 1

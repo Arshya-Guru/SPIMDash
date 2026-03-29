@@ -1,0 +1,49 @@
+data:
+  image_dir: /nfs/khan/trainees/apooladi/brainhack/downsampled_lighsheet5
+  label_dir: /nfs/khan/trainees/apooladi/brainhack/labels
+  output_dir: ./outputs_experiment_b
+  random_seed: 42
+  val_subjects: 10
+model:
+  architecture: synthseg_unet
+  base_features: 24
+  in_channels: 1
+synth:
+  bias_field_coeffs: 4
+  bias_field_strength: 0.4
+  blur_sigma_range:
+  - 0
+  - 1.5
+  deform_grid_spacing: 32
+  deform_scale: 3.0
+  gamma_range:
+  - 0.7
+  - 1.5
+  intensity_mu_range:
+  - 0
+  - 300
+  intensity_sigma_range:
+  - 5
+  - 30
+  noise_std_range:
+  - 0
+  - 25
+training:
+  amp: true
+  batch_size: 2
+  epochs: 60
+  gpu: 1
+  loss: dice_ce
+  lr: 0.0001
+  optimizer: adam
+  save_every: 25
+  scheduler: none
+  steps_per_epoch: 500
+  val_every: 3
+  warmup_steps: 0
+volume:
+  n_labels: 23
+  target_shape:
+  - 224
+  - 320
+  - 192
