@@ -1,0 +1,71 @@
+# =============================================================================
+# SynthSegSPIM - Configuration
+# =============================================================================
+
+# -- Paths --
+data:
+  label_dir: "/nfs/khan/trainees/apooladi/brainhack/labels"
+  image_dir: "/nfs/khan/trainees/apooladi/brainhack/downsampled_lighsheet5"
+  output_dir: "./outputs"
+
+  # train/val split
+  val_subjects: 10
+  random_seed: 42
+
+# -- Volume geometry (from data inspection) --
+volume:
+  # Shapes vary across subjects (148-272 x 312-392 x 109-226).
+  # Median is ~220x316x186. Must be divisible by 32 (2^5 levels).
+  # All volumes will be center-padded/cropped to this shape.
+  target_shape: [224, 320, 192]
+  n_labels: 23   # labels 0..22 (23 total including background)
+
+# -- Synthetic generation --
+synth:
+  # intensity sampling per label
+  intensity_mu_range: [0, 300]
+  intensity_sigma_range: [5, 30]
+
+  # augmentation
+  bias_field_coeffs: 4
+  bias_field_strength: 0.4
+  noise_std_range: [0, 25]
+  blur_sigma_range: [0, 1.5]
+
+  # spatial deformation
+  deform_scale: 3.0
+  deform_grid_spacing: 32
+
+  # gamma augmentation
+  gamma_range: [0.7, 1.5]
+
+# -- Model (SynthSeg architecture) --
+model:
+  architecture: "synthseg_unet"
+  in_channels: 1
+  base_features: 24           # channels: [24, 48, 96, 192, 384]
+  # 5 encoder levels, Conv3d->ELU->BatchNorm, no dropout, no residual
+
+# -- Training (SynthSeg two-phase) --
+training:
+  epochs: 300
+  steps_per_epoch: 500        # synthetic samples per epoch
+  batch_size: 2
+  lr: 1.0e-4
+  optimizer: "adam"            # constant LR, no weight decay
+  scheduler: "none"
+
+  # two-phase loss
+  warmup_steps: 10000         # phase 1: WeightedL2 loss (steps, not epochs)
+  loss_phase1: "wl2"          # MSE between logits and one-hot
+  loss_phase2: "dice"         # soft Dice only (no CE)
+
+  # checkpointing
+  save_every: 25
+  val_every: 5
+
+  # hardware
+  num_workers: 8
+  pin_memory: true
+  amp: true
+  gpu_ids: [0, 1]

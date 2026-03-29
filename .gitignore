@@ -1,0 +1,16 @@
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+
+# outputs
+outputs/
+checkpoints/
+logs/
+
+# python
+__pycache__/
+*.pyc
+*.egg-info/
+
+# misc
+.venv/
