@@ -46,26 +46,23 @@ model:
   base_features: 24           # channels: [24, 48, 96, 192, 384]
   # 5 encoder levels, Conv3d->ELU->BatchNorm, no dropout, no residual
 
-# -- Training (SynthSeg two-phase) --
+# -- Training (plain PyTorch, single GPU, GPU-native synth) --
 training:
-  epochs: 300
-  steps_per_epoch: 500        # synthetic samples per epoch
+  epochs: 60
+  steps_per_epoch: 500
   batch_size: 2
   lr: 1.0e-4
-  optimizer: "adam"            # constant LR, no weight decay
+  optimizer: "adam"
   scheduler: "none"
 
-  # two-phase loss
-  warmup_steps: 10000         # phase 1: WeightedL2 loss (steps, not epochs)
-  loss_phase1: "wl2"          # MSE between logits and one-hot
-  loss_phase2: "dice"         # soft Dice only (no CE)
+  # loss
+  warmup_steps: 0             # no warmup — Dice+CE from step 0
+  loss: "dice_ce"
 
   # checkpointing
   save_every: 25
-  val_every: 5
+  val_every: 3
 
   # hardware
-  num_workers: 8
-  pin_memory: true
   amp: true
-  gpu_ids: [0, 1]
+  gpu: 0                      # which GPU (0 or 1; use other for parallel experiment)

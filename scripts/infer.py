@@ -134,13 +134,29 @@ def main():
 
     device = torch.device(f"cuda:{args.gpu}" if torch.cuda.is_available() else "cpu")
 
-    # load model
+    # load model (handles both Lightning and plain checkpoints)
     model = build_model(cfg)
     ckpt = torch.load(args.checkpoint, map_location=device, weights_only=False)
-    model.load_state_dict(ckpt["model_state_dict"])
+
+    if "state_dict" in ckpt:
+        # Lightning checkpoint: keys are "model.layer..." — strip prefix
+        state = {k.removeprefix("model."): v for k, v in ckpt["state_dict"].items()
+                 if k.startswith("model.")}
+        model.load_state_dict(state)
+        epoch = ckpt.get("epoch", "?")
+        print(f"Loaded Lightning checkpoint from {args.checkpoint} (epoch {epoch})")
+    else:
+        # Plain checkpoint (handles optional "model." or "module." prefix)
+        state_dict = ckpt["model_state_dict"]
+        if any(k.startswith("model.") for k in state_dict):
+            state_dict = {k.removeprefix("model."): v for k, v in state_dict.items()}
+        elif any(k.startswith("module.") for k in state_dict):
+            state_dict = {k.removeprefix("module."): v for k, v in state_dict.items()}
+        model.load_state_dict(state_dict)
+        print(f"Loaded checkpoint from {args.checkpoint} (epoch {ckpt.get('epoch', '?')})")
+
     model = model.to(device)
     model.eval()
-    print(f"Loaded model from {args.checkpoint} (epoch {ckpt['epoch']}, dice {ckpt.get('best_dice', '?')})")
 
     # single mode
     if args.input and args.output:
