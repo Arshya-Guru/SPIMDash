@@ -242,7 +242,6 @@ def main():
         for step in pbar:
             # Generate synthetic data ON GPU (~30ms)
             images, labels = gpu_synth.generate(batch_size=train_cfg["batch_size"])
-            torch.cuda.empty_cache()  # reclaim fragmented reserved memory
 
             optimizer.zero_grad(set_to_none=True)
 
