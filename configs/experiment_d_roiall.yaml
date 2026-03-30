@@ -1,0 +1,42 @@
+# Experiment D: roi-all fine parcellation for intensity sampling, roi22 targets
+data:
+  label_dir: "/nfs/khan/trainees/apooladi/brainhack/labels"
+  fine_label_dir: "/nfs/khan/trainees/apooladi/brainhack/roi_labels_all"
+  image_dir: "/nfs/khan/trainees/apooladi/brainhack/downsampled_lighsheet5"
+  output_dir: "./outputs_experiment_d_roiall"
+  val_subjects: 10
+  random_seed: 42
+
+volume:
+  target_shape: [224, 320, 192]
+  n_labels: 23
+
+synth:
+  intensity_mu_range: [0, 300]
+  intensity_sigma_range: [5, 30]
+  bias_field_coeffs: 4
+  bias_field_strength: 0.4
+  noise_std_range: [0, 25]
+  blur_sigma_range: [0, 1.5]
+  deform_scale: 3.0
+  deform_grid_spacing: 32
+  gamma_range: [0.7, 1.5]
+
+model:
+  architecture: "synthseg_unet"
+  in_channels: 1
+  base_features: 24
+
+training:
+  epochs: 250
+  steps_per_epoch: 500
+  batch_size: 2
+  lr: 1.0e-4
+  optimizer: "adam"
+  scheduler: "none"
+  warmup_steps: 0
+  loss: "dice_ce"
+  save_every: 25
+  val_every: 3
+  amp: true
+  gpu: 1

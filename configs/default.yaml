@@ -48,7 +48,7 @@ model:
 
 # -- Training (plain PyTorch, single GPU, GPU-native synth) --
 training:
-  epochs: 60
+  epochs: 250
   steps_per_epoch: 500
   batch_size: 2
   lr: 1.0e-4
