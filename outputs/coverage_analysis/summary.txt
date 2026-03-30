@@ -1,0 +1,13 @@
+Coverage Analysis Summary
+========================================
+
+Real images: 108
+Synthetic images: 1000
+PCA variance: ['77.6%', '17.2%', '3.4%', '0.8%', '0.6%']
+
+Coverage (fraction of real within real-real median NN distance):
+  Experiment A: 0.0%
+  Experiment C: 0.0%
+  Experiment D: 0.0%
+  Experiment E: 0.0%
+  Experiment F: 0.0%

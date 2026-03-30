@@ -56,7 +56,7 @@ training:
   scheduler: "none"
 
   # loss
-  warmup_steps: 0             # no warmup — Dice+CE from step 0
+  warmup_steps: 0             # no warmup - Dice+CE from step 0
   loss: "dice_ce"
 
   # checkpointing

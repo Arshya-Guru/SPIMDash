@@ -186,7 +186,7 @@ def load_and_featurize_real(stain, img_dir, mask_dir, device):
 
 def generate_and_featurize_synth(experiment, n_samples, device, cfg_path):
     """Generate synthetic images and compute features on GPU. Returns rows."""
-    with open(cfg_path) as f:
+    with open(cfg_path, encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
 
     target_shape = tuple(cfg["volume"]["target_shape"])
