@@ -6,7 +6,7 @@
 outputs/checkpoints
 checkpoints/
 logs/
-outputs/sweep/
+
 
 # python
 __pycache__/
