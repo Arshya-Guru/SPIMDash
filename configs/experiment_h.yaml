@@ -1,0 +1,52 @@
+# Experiment H: roi-all fine parcellation + sweep-optimized augmentation (Trial 257)
+data:
+  coarse_label_dir: /nfs/khan/trainees/apooladi/brainhack/labels
+  fine_label_dir: /nfs/khan/trainees/apooladi/brainhack/roi_labels_all
+  val_image_dir: /nfs/khan/trainees/apooladi/brainhack/downsampled_lighsheet5
+  exclude_subjects: ["022", "032", "041"]
+  random_seed: 42
+  val_subjects: 10
+
+volume:
+  target_shape: [224, 320, 192]
+  n_labels: 23
+
+model:
+  in_channels: 1
+  base_features: 24
+
+training:
+  batch_size: 2
+  steps_per_epoch: 5000
+  n_epochs: 200
+  val_every_n_epochs: 5
+  save_every_n_epochs: 5
+  keep_last_n_checkpoints: 3
+  lr: 1.0e-4
+  loss: dice_ce
+  amp: true
+
+synth:
+  activation_prob_lo: 0.156
+  activation_prob_hi: 0.677
+  inactive_intensity_max: 29.5
+  inactive_std_max: 5.9
+  boundary_blur_sigma_max: 0.553
+  boundary_blur_prob: 0.447
+  texture_noise_amplitude: 0.256
+  texture_base_resolution: 16
+  texture_prob: 0.939
+  intensity_mean_hi: 138.6
+  intensity_std_lo: 3.65
+  intensity_std_hi: 22.1
+  gamma_std: 0.958
+  bias_field_std: 1.153
+  deform_scale: 3.0
+  deform_grid_spacing: 32
+  bias_field_coeffs: 4
+  olfactory_labels: [1, 2]
+
+output:
+  checkpoint_dir: outputs/experiment_h/checkpoints
+  log_dir: outputs/experiment_h/logs
+  log_file: outputs/experiment_h/logs/training_log.jsonl
